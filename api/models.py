@@ -15,5 +15,5 @@ class SalaryDetails(object):
             "basic_salary": self.basic_salary,
             "total_paye_tax": self.total_paye_tax,
             "employee_total_contribution": self.employee_total_contribution,
-            "employer_total_contribution": self.employer_total_contribution
+            "employer_total_contribution": self.employer_total_contribution,
         }
