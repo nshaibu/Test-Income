@@ -24,6 +24,10 @@ class TestIncomeCalculatorTestCase(TestCase):
         }
         self.test_data_3 = 20000
 
+        self.test_data_4 = {
+            "net_salary": -1000,
+        }
+
     def test_calculate_salary_details_without_allowances(self):
         input_serializer = InputSerializer(data=self.test_data_1)
         self.assertTrue(input_serializer.is_valid())
@@ -69,6 +73,10 @@ class TestIncomeCalculatorTestCase(TestCase):
             60,
         )
 
+    def test_data_validation_fails_if_data_is_wrong(self):
+        input_serializer = InputSerializer(data=self.test_data_4)
+        self.assertFalse(input_serializer.is_valid())
+
 
 class TestIncomeCalculatorAPITestCase(APITestCase):
     api_url = "/api/salary/details"
@@ -89,6 +97,11 @@ class TestIncomeCalculatorAPITestCase(APITestCase):
                     "amount": 20,
                 },
             ],
+        }
+
+        self.test_data_3 = {
+            "net_salary": 1000,
+            "allowances": [34]
         }
 
     def test_endpoint_returns_200_using_data_without_allowances(self):
@@ -112,3 +125,7 @@ class TestIncomeCalculatorAPITestCase(APITestCase):
         self.assertEqual(response.data["employee_total_contribution"], 105.0)
         self.assertEqual(response.data["employer_total_contribution"], 153.9)
         self.assertEqual(response.data["basic_salary"], 855.0)
+
+    def test_wrong_data_raises_400(self):
+        response = self.client.post(self.api_url, data=self.test_data_3, format="json")
+        self.assertEqual(response.status_code, 400)
