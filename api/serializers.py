@@ -42,16 +42,11 @@ class InputSerializer(serializers.Serializer):
         return total_allowances
 
     @staticmethod
-    def calculate_paye_tax(taxable_income):
+    def calculate_paye_tax(taxable_income) -> float:
         tax = 0
         for bracket in PAYE_BRACKETS:
             if taxable_income > bracket[0]:
                 tax += (min(taxable_income, bracket[0]) - tax) * (bracket[1] / 100)
-        else:
-            last_bracket = PAYE_BRACKETS[-1]
-            if taxable_income > last_bracket[0]:
-                tax += (min(taxable_income, last_bracket[0]) - tax) * (last_bracket[1] / 100)
-
         return tax
 
     @classmethod
